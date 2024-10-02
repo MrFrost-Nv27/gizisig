@@ -159,7 +159,7 @@ $("body").on("submit", "#form-klaster", function (e) {
               $(`#k-${idx + 1}-${i + 1}-usia`).text(dataView.usia);
               $(`#k-${idx + 1}-${i + 1}-bb`).text(dataView.bb);
               $(`#k-${idx + 1}-${i + 1}-tb`).text(dataView.tb);
-              markerPasien[idx].setIcon(generateIcon(markerColor[i]));
+              markerPasien[dataView.id - 1].setIcon(generateIcon(markerColor[i]));
             });
           });
 
