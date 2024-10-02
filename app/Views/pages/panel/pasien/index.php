@@ -33,45 +33,7 @@
 <div class="card shadow mb-4">
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-striped datatable-init" width="100%">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nik</th>
-                        <th>Nama</th>
-                        <th>Tempat Lahir</th>
-                        <th>Tanggal Lahir</th>
-                        <th>Jenis Kelamin</th>
-                        <th>Alamat</th>
-                        <th>Ortu</th>
-                        <!-- <th>Latitude</th>
-                        <th>Longitude</th> -->
-                        <th>Aksi</th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($items as $key => $item) : ?>
-                    <tr>
-                        <td><?= $key + 1 ?></td>
-                        <td><?= $item->nik ?></td>
-                        <td><?= $item->nama ?></td>
-                        <td><?= $item->tempat_lahir ?></td>
-                        <td><?= $item->tanggal_lahir ?></td>
-                        <td><?= $item->jenis_kelamin == "L" ? "Laki-laki" : "Perempuan" ?></td>
-                        <td><?= $item->alamat ?></td>
-                        <td><?= $item->ortu ?></td>
-                        <!-- <td><?= $item->latitude ?></td>
-                            <td><?= $item->longitude ?></td> -->
-                        <td>
-                            <a href="<?= route_to('pasien-edit', $item->id) ?>" class="btn app-btn-primary"><i
-                                    class="fas fa-edit"></i></a>
-                            <a href="<?= base_url('api/pasien/' . $item->id) ?>"
-                                class="btn app-btn-secondary btn-delete"><i class="fas fa-trash"></i></a>
-                        </td>
-                    </tr>
-                    <?php endforeach ?>
-                </tbody>
+            <table class="table table-striped" id="table-data" width="100%">
             </table>
         </div>
     </div>
@@ -79,3 +41,7 @@
 </div>
 <!--//tab-content-->
 <?= $this->endSection() ?>
+
+<?=$this->section('script')?>
+<script src="<?=base_url('js/pages/panel/pasien.js')?>"></script>
+<?=$this->endSection()?>

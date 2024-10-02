@@ -5,6 +5,22 @@
 <?=$this->extend('layouts/panel/main')?>
 <?=$this->section('main')?>
 
+<div class="row g-4 mb-4 settings-section" style="position: sticky;top: 2rem;z-index: 1;">
+    <div class="col-12">
+        <div class="app-card app-card-settings shadow-sm p-4">
+            <div class="app-card-body">
+                <div class="klasterisasi-nav-wrapper">
+                    <a href="#jarak-antar-point" class="klasterisasi-nav-link">Tabel Jarak</a>
+                    <a href="#input-parameter" class="klasterisasi-nav-link">Input Parameter</a>
+                    <a href="#hasil-klaster" class="klasterisasi-nav-link">Hasil Klaster</a>
+                    <a href="#visualisasi" class="klasterisasi-nav-link">Visualisasi Hasil</a>
+                    <a href="#score" class="klasterisasi-nav-link">SIlhoutte Score</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container-xl">
     <div class="row g-3 mb-4 align-items-center justify-content-between">
         <div class="col-auto">
@@ -23,10 +39,10 @@
     <!--//col-auto-->
 </div>
 
-<div class="row g-4 mb-4 settings-section">
+<div class="row g-4 mb-4 settings-section" id="jarak-antar-point">
     <div class="col-12">
         <div class="app-card app-card-settings shadow-sm p-4">
-            <div class="app-card-body">
+            <div class="app-card-body" style="position: relative; padding-right: 7rem">
                 <p class="text-center">Perhitungan Jarak Antar Point</p>
                 <div class="table-responsive">
                     <table id="table-jarak" class="table table-bordered">
@@ -35,13 +51,26 @@
                         <tfoot></tfoot>
                     </table>
                 </div>
+                <div id="pts-box">
+                    <p class="text-center">></p>
+                    <div class="table-responsive">
+                        <table id="table-pts" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Pts</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row g-4 settings-section">
-    <div class="col-12 col-md-8">
+<div class="row g-4 settings-section" id="input-parameter">
+    <div class="col-12">
         <div class="app-card app-card-settings shadow-sm p-4">
             <div class="app-card-body">
                 <form id="form-klaster" action="" method="POST">
@@ -65,10 +94,53 @@
             <!--//app-card-body-->
         </div>
     </div>
-    <div class="col-12 col-md-4">
+</div>
+<div class="row g-4 settings-section" id="hasil-klaster">
+    <div class="col-12">
         <div class="app-card app-card-settings shadow-sm p-4">
             <div class="app-card-body">
                 <h5>Hasil Klaster</h5>
+                <br>
+                <div class="table-responsive" id="table-hasil-klaster" style="display: none;">
+                    <h5>Jumlah Klaster : <span id="jml-klaster">0</span></h5>
+                    <table id="table-klaster" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th colspan="4">Klaster 1</th>
+                                <th colspan="4">Klaster 2</th>
+                                <th colspan="4">Klaster 3</th>
+                                <th colspan="4">Klaster 4</th>
+                                <th colspan="4">Outlier</th>
+                            </tr>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Usia</th>
+                                <th>BB</th>
+                                <th>TB</th>
+                                <th>Nama</th>
+                                <th>Usia</th>
+                                <th>BB</th>
+                                <th>TB</th>
+                                <th>Nama</th>
+                                <th>Usia</th>
+                                <th>BB</th>
+                                <th>TB</th>
+                                <th>Nama</th>
+                                <th>Usia</th>
+                                <th>BB</th>
+                                <th>TB</th>
+                                <th>Nama</th>
+                                <th>Usia</th>
+                                <th>BB</th>
+                                <th>TB</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <br>
+                <h5 class="text-center" id="no-klaster" style="display: none;">Tidak ada Klaster yang dihasilkan dari
+                    parameter tersebut</h5>
                 <div class="hasil-klaster">
                     <div class="accordion accordion-flush" id="accordionFlushExample">
                     </div>
@@ -99,11 +171,21 @@
     </div>
 </template>
 
-<div class="row g-4 settings-section mt-4">
+<div class="row g-4 settings-section mt-4" id="visualisasi">
     <div class="col-12">
         <div class="app-card app-card-settings shadow-sm p-4">
             <div class="app-card-body">
                 <div id="klastermap" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 settings-section" id="score">
+    <div class="col-12">
+        <div class="app-card app-card-settings shadow-sm p-4">
+            <div class="app-card-body">
+                <h4 class="text-center">Silhoutte Score : <span id="silhoutte-score">0</span></h4>
             </div>
         </div>
     </div>

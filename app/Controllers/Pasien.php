@@ -15,7 +15,6 @@ class Pasien extends BaseController
     }
     public function index(): string
     {
-        $this->data['items'] = Model::all();
         return view('pages/panel/pasien/index',  $this->data);
     }
 

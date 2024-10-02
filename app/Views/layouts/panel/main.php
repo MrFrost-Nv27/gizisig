@@ -22,6 +22,7 @@
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <link id="theme-style" rel="stylesheet" href="<?=base_url('css/portal.css')?>">
+    <link rel="stylesheet" href="<?= base_url('css/pages/panel.css') ?>">
     <?=$this->renderSection('style')?>
 </head>
 
