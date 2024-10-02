@@ -1,0 +1,49 @@
+.klasterisasi-nav-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  background-color: white;
+  gap: 1rem;
+}
+
+.klasterisasi-nav-link {
+  position: relative;
+  color: black;
+  transition: all ease 0.3s;
+}
+
+.klasterisasi-nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -0.3rem;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 2rem;
+  height: 4px;
+  border-radius: 1rem;
+  background-color: var(--bs-success);
+  transition: all ease 0.3s;
+}
+
+.klasterisasi-nav-link:hover::after {
+  width: 100%;
+}
+
+#pts-box {
+  position: absolute;
+  background-color: white;
+  top: 0;
+  right: 0;
+  padding: 0 2rem;
+}
+
+table#table-jarak thead th:first-child,
+table#table-jarak thead td:first-child,
+table#table-jarak tbody th:first-child,
+table#table-jarak tbody td:first-child {
+  position: sticky;
+  left: 0;
+  background-color: white;
+}
