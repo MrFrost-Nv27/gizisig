@@ -42,7 +42,7 @@ $("body").on("submit", "#form-klaster", function (e) {
         list.find(".accordion-collapse").attr("id", `flush-${i + 1}`);
         list.find(".accordion-collapse").attr("aria-labelledby", `flush-h${i + 1}`);
         $.each(v, (k, idx) => {
-          list.find(".list-group").append(`<a href="#" class="list-group-item list-group-item-action">${cloud.get("pasien").find((x) => x.id == idx).nama}</a>`);
+          list.find(".list-group").append(`<a href="#" class="list-group-item list-group-item-action">${cloud.get("pasien").find((x) => x.id == idx+1).nama}</a>`);
           markerPasien[idx].setIcon(generateIcon(markerColor[i]));
         });
         $(".hasil-klaster .accordion").append(list);

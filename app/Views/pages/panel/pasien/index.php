@@ -37,13 +37,13 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Nik</th>
                         <th>Nama</th>
-                        <th>Tempat Lahir</th>
-                        <th>Tanggal Lahir</th>
+                        <th>Usia</th>
+                        <th>Berat Badan</th>
+                        <th>Tinggi Badan</th>
                         <th>Jenis Kelamin</th>
                         <th>Alamat</th>
-                        <th>Ortu</th>
+                        <th>Status Gizi</th>
                         <!-- <th>Latitude</th>
                         <th>Longitude</th> -->
                         <th>Aksi</th>
@@ -54,13 +54,13 @@
                     <?php foreach ($items as $key => $item) : ?>
                     <tr>
                         <td><?= $key + 1 ?></td>
-                        <td><?= $item->nik ?></td>
                         <td><?= $item->nama ?></td>
-                        <td><?= $item->tempat_lahir ?></td>
-                        <td><?= $item->tanggal_lahir ?></td>
+                        <td><?= $item->usia ?></td>
+                        <td><?= $item->bb ?></td>
+                        <td><?= $item->tb ?></td>
                         <td><?= $item->jenis_kelamin == "L" ? "Laki-laki" : "Perempuan" ?></td>
                         <td><?= $item->alamat ?></td>
-                        <td><?= $item->ortu ?></td>
+                        <td><?= $item->bb_tb ?></td>
                         <!-- <td><?= $item->latitude ?></td>
                             <td><?= $item->longitude ?></td> -->
                         <td>

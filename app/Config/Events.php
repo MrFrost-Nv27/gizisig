@@ -56,26 +56,26 @@ Events::on('pre_system', static function () {
 });
 
 
-Events::on('login', function (User $user) {
-    $request = \Config\Services::request();
-    $response = \Config\Services::response();
+// Events::on('login', function (User $user) {
+//     $request = \Config\Services::request();
+//     $response = \Config\Services::response();
 
-    $response->setJSON([
-        "redirect" => route_to("dashboard"),
-    ])->setStatusCode(200)->setContentType('application/json')->send();
-    die;
-});
+//     $response->setJSON([
+//         "redirect" => route_to("dashboard"),
+//     ])->setStatusCode(200)->setContentType('application/json')->send();
+//     die;
+// });
 
-Events::on('failedLogin', function ($credentials) {
-    $response = \Config\Services::response();
-    $provider = model(UserModel::class);
-    $user = $provider->findByCredentials($credentials);
-    $messages = $user ? "Kata sandi yang anda masukkan salah" : "Pengguna tidak ditemukan";
-    $response->setJSON([
-        'status' => 'error',
-        'error' => 400,
-        'messages' => $messages,
-        'credentials' => $credentials,
-    ])->setStatusCode(400)->setContentType('application/json')->send();
-    die;
-});
+// Events::on('failedLogin', function ($credentials) {
+//     $response = \Config\Services::response();
+//     $provider = model(UserModel::class);
+//     $user = $provider->findByCredentials($credentials);
+//     $messages = $user ? "Kata sandi yang anda masukkan salah" : "Pengguna tidak ditemukan";
+//     $response->setJSON([
+//         'status' => 'error',
+//         'error' => 400,
+//         'messages' => $messages,
+//         'credentials' => $credentials,
+//     ])->setStatusCode(400)->setContentType('application/json')->send();
+//     die;
+// });

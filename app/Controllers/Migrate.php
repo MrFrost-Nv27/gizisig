@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Database\Schema\Blueprint;
 use Psr\Log\LoggerInterface;
 use Throwable;
+use CodeIgniter\Shield\Entities\User;
 
 class Migrate extends BaseController
 {
@@ -50,6 +51,21 @@ class Migrate extends BaseController
             $migrate->setNamespace('App')->latest();
 
             $seeder->call('InitSeeder');
+
+            // $users = auth()->getProvider();
+
+            // $user = new User([
+            //     'username' => 'admin',
+            //     'email'    => 'admin@gmail.com',
+            //     'password' => 'admin',
+            // ]);
+            // $users->save($user);
+
+            // // To get the complete user object with ID, we need to get from the database
+            // $user = $users->findById($users->getInsertID());
+
+            // // Add to default group
+            // $users->addToDefaultGroup($user);
 
         } catch (Throwable $e) {
             throw new Exception($e->getMessage());
