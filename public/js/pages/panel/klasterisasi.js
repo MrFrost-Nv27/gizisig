@@ -8,6 +8,7 @@ const hospitalIcon = L.divIcon({
   iconSize: [100, 100],
   popupAnchor: [0, -16],
 });
+let results = [];
 let markerPasien = [];
 let markerPuskesmas = [];
 let markerColor = [
@@ -52,14 +53,60 @@ function generateIcon(color = "") {
   });
 }
 
-$("body").on("submit", "#form-klaster", function (e) {
-  e.preventDefault();
-  const data = {};
+$("body").on("click", ".btn-delete", function (e) {
   $(this)
-    .serializeArray()
-    .map(function (x) {
-      data[x.name] = Number(x.value);
+    .closest("tr")
+    .fadeOut("fast", function () {
+      $(this).remove();
     });
+});
+$("body").on("click", ".btn-reset", function (e) {
+  $("#table-parameter tbody").empty();
+});
+$("body").on("click", ".btn-run", function (e) {
+  if ($("#table-parameter tbody tr").length == 0) {
+    Toast.fire({
+      icon: "error",
+      title: "Silahkan tambahkan parameter terlebih dahulu",
+    });
+    return;
+  }
+  results = [];
+  $.each($("#table-parameter tbody tr"), async function (i, row) {
+    const data = {
+      epsilon: Number($(row).find(".epsilon").text()),
+      minpts: Number($(row).find(".minpts").text()),
+    };
+
+    console.log("proses : " + (i + 1));
+
+    const res = await $.ajax({
+      type: "POST",
+      url: origin + "/api/dbscan",
+      data: data,
+    });
+
+    results.push(res);
+    if (i == $("#table-parameter tbody tr").length - 1) {
+      handleResults();
+    }
+  });
+});
+
+function handleResults() {
+  $.each(results, function (i, res) {
+    results[i].score = silhouetteScore(res.data);
+    $("#table-parameter tbody tr").eq(i).find(".silhoutte-score").text(results[i].score);
+  });
+
+  const highestScoreObject = results.reduce((prev, current) => (prev.score > current.score ? prev : current));
+  const highestScoreIndex = results.findIndex((item) => item === highestScoreObject);
+
+  const data = {
+    epsilon: Number($("#table-parameter tbody tr").eq(highestScoreIndex).find(".epsilon").text()),
+    minpts: Number($("#table-parameter tbody tr").eq(highestScoreIndex).find(".minpts").text()),
+  };
+  const res = highestScoreObject;
 
   $("#table-jarak tbody td").removeClass("bg-success").removeClass("text-white");
 
@@ -86,109 +133,123 @@ $("body").on("submit", "#form-klaster", function (e) {
     }
   });
 
-  $.ajax({
-    type: "POST",
-    url: origin + "/api/dbscan",
-    data: data,
-    success: function (res) {
-      $(markerPasien).each((index) => markerPasien[index].setIcon(generateIcon("grey")));
-      console.log(res);
-      $("#silhoutte-score").text(0);
-      let outliers = cloud.get("pasien");
-      res.data.forEach((dtt) => (outliers = outliers.filter((o) => !dtt.includes(o.id - 1))));
-      console.log(outliers);
+  $(markerPasien).each((index) => markerPasien[index].setIcon(generateIcon("grey")));
+  console.log(res);
+  $("#silhoutte-score").text(0);
+  let outliers = cloud.get("pasien");
+  res.data.forEach((dtt) => (outliers = outliers.filter((o) => !dtt.includes(o.id - 1))));
+  console.log(outliers);
 
-      if (res.data.length > 0) {
-        $("#no-klaster").fadeOut("normal", () => {
-          $("#table-hasil-klaster").fadeIn();
-          let howMuch = 0;
-          $(res.data).each((i, v) => (v.length > howMuch ? (howMuch = v.length) : null));
-          if (outliers.length > howMuch) howMuch = outliers.length;
+  if (res.data.length > 0) {
+    $("#no-klaster").fadeOut("normal", () => {
+      $("#table-hasil-klaster").fadeIn();
+      let howMuch = 0;
+      $(res.data).each((i, v) => (v.length > howMuch ? (howMuch = v.length) : null));
+      if (outliers.length > howMuch) howMuch = outliers.length;
 
-          $("#table-klaster thead").empty();
-          $("#table-klaster tbody").empty();
+      $("#table-klaster thead").empty();
+      $("#table-klaster tbody").empty();
 
-          for (let much = 1; much <= howMuch; much++) {
-            let tdk = "";
-            for (let k = 1; k <= res.data.length; k++) {
-              tdk += `<td id="k-${much}-${k}-nama"></td>`;
-              tdk += `<td id="k-${much}-${k}-usia"></td>`;
-              tdk += `<td id="k-${much}-${k}-bb"></td>`;
-              tdk += `<td id="k-${much}-${k}-tb"></td>`;
-            }
-            tdk += `<td id="k-${much}-outlier-nama"></td>`;
-            tdk += `<td id="k-${much}-outlier-usia"></td>`;
-            tdk += `<td id="k-${much}-outlier-bb"></td>`;
-            tdk += `<td id="k-${much}-outlier-tb"></td>`;
-            $("#table-klaster tbody").append(`<tr>${tdk}</tr>`);
-          }
-          let tdc = "";
-          let tdh = "";
-          for (let k = 1; k <= res.data.length; k++) {
-            tdc += `<th colspan="4">Klaster ${k} (${res.data[k - 1].length})</th>`;
-            tdh += `
+      for (let much = 1; much <= howMuch; much++) {
+        let tdk = "";
+        for (let k = 1; k <= res.data.length; k++) {
+          tdk += `<td id="k-${much}-${k}-nama"></td>`;
+          tdk += `<td id="k-${much}-${k}-usia"></td>`;
+          tdk += `<td id="k-${much}-${k}-bb"></td>`;
+          tdk += `<td id="k-${much}-${k}-tb"></td>`;
+        }
+        tdk += `<td id="k-${much}-outlier-nama"></td>`;
+        tdk += `<td id="k-${much}-outlier-usia"></td>`;
+        tdk += `<td id="k-${much}-outlier-bb"></td>`;
+        tdk += `<td id="k-${much}-outlier-tb"></td>`;
+        $("#table-klaster tbody").append(`<tr>${tdk}</tr>`);
+      }
+      let tdc = "";
+      let tdh = "";
+      for (let k = 1; k <= res.data.length; k++) {
+        tdc += `<th colspan="4">Klaster ${k} (${res.data[k - 1].length})</th>`;
+        tdh += `
             <th>Nama</th>
             <th>Usia</th>
             <th>BB</th>
             <th>TB</th>
             `;
-          }
-          tdc += `<th colspan="4">Outlier (${outliers.length})</th>`;
-          tdh += `
+      }
+      tdc += `<th colspan="4">Outlier (${outliers.length})</th>`;
+      tdh += `
               <th>Nama</th>
               <th>Usia</th>
               <th>BB</th>
               <th>TB</th>
               `;
-          $("#table-klaster thead").append(`<tr>${tdc}</tr><tr>${tdh}</tr>`);
-          $("#jml-klaster").text(res.data.length);
+      $("#table-klaster thead").append(`<tr>${tdc}</tr><tr>${tdh}</tr>`);
+      $("#jml-klaster").text(res.data.length);
 
-          $(res.data).each((i, v) => {
-            const dataAll = v.map((vi) => cloud.get("pasien").find((x) => x.id == vi + 1));
-            dataAll.sort((a, b) => {
-              if (a.usia > b.usia) return 1;
-              if (a.usia < b.usia) return -1;
+      $(res.data).each((i, v) => {
+        const dataAll = v.map((vi) => cloud.get("pasien").find((x) => x.id == vi + 1));
+        dataAll.sort((a, b) => {
+          if (a.usia > b.usia) return 1;
+          if (a.usia < b.usia) return -1;
 
-              if (a.bb > b.bb) return 1;
-              if (a.bb < b.bb) return -1;
+          if (a.bb > b.bb) return 1;
+          if (a.bb < b.bb) return -1;
 
-              return a.tb - b.tb;
-            });
-            $.each(dataAll, (idx, dataView) => {
-              $(`#k-${idx + 1}-${i + 1}-nama`).text(dataView.nama);
-              $(`#k-${idx + 1}-${i + 1}-usia`).text(dataView.usia);
-              $(`#k-${idx + 1}-${i + 1}-bb`).text(dataView.bb);
-              $(`#k-${idx + 1}-${i + 1}-tb`).text(dataView.tb);
-              markerPasien[dataView.id - 1].setIcon(generateIcon(markerColor[i]));
-            });
-          });
-
-          outliers.sort((a, b) => {
-            if (a.usia > b.usia) return 1;
-            if (a.usia < b.usia) return -1;
-
-            if (a.bb > b.bb) return 1;
-            if (a.bb < b.bb) return -1;
-
-            return a.tb - b.tb;
-          });
-
-          outliers.forEach((o, idx) => {
-            $(`#k-${idx + 1}-outlier-nama`).text(o.nama);
-            $(`#k-${idx + 1}-outlier-usia`).text(o.usia);
-            $(`#k-${idx + 1}-outlier-bb`).text(o.bb);
-            $(`#k-${idx + 1}-outlier-tb`).text(o.tb);
-          });
-
-          $("#silhoutte-score").text(silhouetteScore(res.data));
+          return a.tb - b.tb;
         });
-        return;
-      }
-      $("#table-hasil-klaster").fadeOut("normal", () => {
-        $("#no-klaster").fadeIn();
+        $.each(dataAll, (idx, dataView) => {
+          $(`#k-${idx + 1}-${i + 1}-nama`).text(dataView.nama);
+          $(`#k-${idx + 1}-${i + 1}-usia`).text(dataView.usia);
+          $(`#k-${idx + 1}-${i + 1}-bb`).text(dataView.bb);
+          $(`#k-${idx + 1}-${i + 1}-tb`).text(dataView.tb);
+          markerPasien[dataView.id - 1].setIcon(generateIcon(markerColor[i]));
+        });
       });
-    },
+
+      outliers.sort((a, b) => {
+        if (a.usia > b.usia) return 1;
+        if (a.usia < b.usia) return -1;
+
+        if (a.bb > b.bb) return 1;
+        if (a.bb < b.bb) return -1;
+
+        return a.tb - b.tb;
+      });
+
+      outliers.forEach((o, idx) => {
+        $(`#k-${idx + 1}-outlier-nama`).text(o.nama);
+        $(`#k-${idx + 1}-outlier-usia`).text(o.usia);
+        $(`#k-${idx + 1}-outlier-bb`).text(o.bb);
+        $(`#k-${idx + 1}-outlier-tb`).text(o.tb);
+      });
+
+      $("#silhoutte-score").text(silhouetteScore(res.data));
+    });
+    return;
+  }
+  $("#table-hasil-klaster").fadeOut("normal", () => {
+    $("#no-klaster").fadeIn();
   });
+}
+
+$("body").on("submit", "#form-klaster", function (e) {
+  e.preventDefault();
+  const data = {};
+  $(this)
+    .serializeArray()
+    .map(function (x) {
+      data[x.name] = Number(x.value);
+    });
+
+  $("#table-parameter tbody").append(`
+    <tr>
+        <td><button type="button" class="btn btn-warning btn-delete">Hapus</button></td>
+        <td class="epsilon">${data.epsilon}</td>
+        <td class="minpts">${data.minpts}</td>
+        <td class="silhoutte-score">-</td>
+    </tr>
+  `);
+
+  $(this)[0].reset();
 });
 
 $(".klasterisasi-nav-link").on("click", function (e) {

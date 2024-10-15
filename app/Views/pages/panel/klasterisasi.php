@@ -87,9 +87,35 @@
                         <div class="error-message"></div>
                     </div>
                     <div class="mb-3">
-                        <button type="submit" class="btn app-btn-primary">Simpan</button>
+                        <button type="submit" class="btn app-btn-primary">Tambah</button>
                     </div>
                 </form>
+                <br>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-bordered" id="table-parameter">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Epsilon</th>
+                                        <th>MinPts</th>
+                                        <th>Silhoutte Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <button type="button" class="btn btn-danger btn-reset">Reset</button>
+                            <button type="button" class="btn btn-success btn-run">Jalankan</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!--//app-card-body-->
         </div>
